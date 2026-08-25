@@ -1,0 +1,13 @@
+node_modules
+.env
+dns-fix.js
+
+# build output
+dist
+frontend/dist
+
+# playwright
+test-results
+playwright-report
+blob-report
+playwright/.cache
