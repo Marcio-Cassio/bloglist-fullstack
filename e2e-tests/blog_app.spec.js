@@ -20,7 +20,7 @@ test.describe('Blog app', () => {
       },
     })
 
-    await page.goto('/')
+    await page.goto('/login')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Blog app', () => {
     await page.getByLabel('password').fill('secret123')
     await page.getByRole('button', { name: 'login' }).click()
 
-    await expect(page.getByText('Marcio Junior logged in', { exact: true })).toBeVisible()
+    await expect(page.getByRole('banner').getByText('Marcio Junior logged in')).toBeVisible()
   })
 
   test('login fails with wrong credentials', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Blog app', () => {
 
       await page.getByRole('button', { name: 'create' }).click()
 
-      await expect(page.getByText('Playwright blog Marcio Junior')).toBeVisible()
+      await expect(page.getByTestId('blog-item').filter({ hasText: 'Playwright blog' })).toBeVisible()
     })
 
     test('a blog can be liked', async ({ page }) => {
@@ -77,11 +77,11 @@ test.describe('Blog app', () => {
  
       await page.getByRole('button', { name: 'view' }).click()
 
-      await expect(page.getByText('likes 0')).toBeVisible()
+      await expect(page.getByTestId('blog-item').getByText('0', { exact: true })).toBeVisible()
 
       await page.getByRole('button', { name: 'like' }).click()
 
-      await expect(page.getByText('likes 1')).toBeVisible()
+      await expect(page.getByTestId('blog-item').getByText('1', { exact: true })).toBeVisible()
     })
 
     test('user who created a blog can remove it', async ({ page }) => {
@@ -135,22 +135,28 @@ test.describe('Blog app', () => {
       await createBlog('Second blog', 'Marcio', 'https://second.com')
       await createBlog('Third blog', 'Marcio', 'https://third.com')
 
-      await page.getByText('First blog Marcio').getByRole('button', { name: 'view' }).click()
-      await page.getByText('Second blog Marcio').getByRole('button', { name: 'view' }).click()
-      await page.getByText('Third blog Marcio').getByRole('button', { name: 'view' }).click()
+      await page.getByTestId('blog-item').filter({ hasText: 'First blog' }).getByRole('button', { name: 'view' }).click()
+      await page.getByTestId('blog-item').filter({ hasText: 'Second blog' }).getByRole('button', { name: 'view' }).click()
+      await page.getByTestId('blog-item').filter({ hasText: 'Third blog' }).getByRole('button', { name: 'view' }).click()
 
-      const firstBlog = page.getByTestId('blog-item').filter({ hasText: 'First blog Marcio' })
-      const secondBlog = page.getByTestId('blog-item').filter({ hasText: 'Second blog Marcio' })
-      const thirdBlog = page.getByTestId('blog-item').filter({ hasText: 'Third blog Marcio' })
+      const firstBlog = page.getByTestId('blog-item').filter({ hasText: 'First blog' })
+      const secondBlog = page.getByTestId('blog-item').filter({ hasText: 'Second blog' })
+      const thirdBlog = page.getByTestId('blog-item').filter({ hasText: 'Third blog' })
 
       await firstBlog.getByRole('button', { name: 'like' }).click()
+      await expect(firstBlog.getByText('1', { exact: true })).toBeVisible()
 
       await secondBlog.getByRole('button', { name: 'like' }).click()
+      await expect(secondBlog.getByText('1', { exact: true })).toBeVisible()
       await secondBlog.getByRole('button', { name: 'like' }).click()
+      await expect(secondBlog.getByText('2', { exact: true })).toBeVisible()
 
       await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await expect(thirdBlog.getByText('1', { exact: true })).toBeVisible()
       await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await expect(thirdBlog.getByText('2', { exact: true })).toBeVisible()
       await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await expect(thirdBlog.getByText('3', { exact: true })).toBeVisible()
 
       const blogs = page.getByTestId('blog-item')
 

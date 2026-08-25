@@ -1,4 +1,5 @@
 require('dotenv').config()
+const path = require('path')
 const express = require('express')
 const mongoose = require('mongoose')
 const testingRouter = require('./controllers/testing')
@@ -28,6 +29,7 @@ const connectToMongo = async () => {
 connectToMongo()
 
 app.use(express.json())
+app.use(express.static(path.join(__dirname, 'frontend', 'dist')))
 
 app.use(middleware.tokenExtractor)
 
@@ -38,6 +40,10 @@ app.use('/api/login', loginRouter)
 if (process.env.NODE_ENV === 'test') {
   app.use('/api/testing', testingRouter)
 }
+
+app.get(/^(?!\/api).*/, (request, response) => {
+  response.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'))
+})
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
