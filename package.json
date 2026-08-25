@@ -11,9 +11,10 @@
     "lint": "eslint .",
     "install:frontend": "cd frontend && npm install",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "lint:frontend": "cd frontend && npm run lint",
-    "test:frontend": "cd frontend && npm run test:run",
+    "lint:frontend": "cd frontend && npm install && npm run lint",
+    "test:frontend": "cd frontend && npm install && npm run test:run",
     "test:e2e": "playwright test"
+    
   },
   "keywords": [],
   "author": "",

@@ -3,6 +3,9 @@ import globals from 'globals'
 import stylistic from '@stylistic/eslint-plugin'
 
 export default [
+  {
+    ignores: ['dist/**', 'frontend/**', 'playwright-report/**', 'test-results/**'],
+  },
   js.configs.recommended,
   {
     files: ['**/*.js'],
